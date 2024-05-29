@@ -8,4 +8,5 @@ If the url has a search param of `handle=1`, the middleware will fully handle th
 
 If the url does not have that search param, the middleware will add the headers, and the request will proceed to the route handler. In this case both headers make it to the client.
 
-Additionally, this bug does not reproduce when running locally — likely because there is no real edge environment when running locally.
+> [!Note]
+> This bug does not reproduce when running locally — likely because there is no real edge environment when running locally.
