@@ -36,15 +36,20 @@ const sendUpstreamGet = async (req: NextRequest) =>
     }`
   );
 
-const sendUpstreamPost = async (req: NextRequest) =>
-  // fetch(`https://jsonplaceholder.typicode.com/posts`, {
-  //   method: "POST",
-  //   body: JSON.stringify({
-  //     foo: req.body ? await req.text() : "no body text",
-  //   }),
-  //   headers: { "Content-type": "application/json" },
-  // });
-  literalFailingUpstreamResponse();
+const sendUpstreamPost = async (req: NextRequest) => {
+  return fetch(
+    `https://api.test.ws.sonos.com/content/api/v1/groups/RINCON_347E5CE0055E01400%3A365384700/services/16751367/accounts/998892611/queues/c16ad138-a40f-42e2-9bcd-dfb102bf28d1/resources?position=NaN`,
+    {
+      method: "POST",
+      body: req.body ? JSON.stringify(await req.json()) : "no body",
+      headers: {
+        authorization: req.headers.get("authorization") ?? "asdf",
+        "Content-type": "application/json",
+        "if-match": req.headers.get("if-match") ?? "asdf",
+      },
+    }
+  );
+};
 
 const getDownstreamHeaders = (upstreamResponse: Response) => {
   console.log(
@@ -56,26 +61,11 @@ const getDownstreamHeaders = (upstreamResponse: Response) => {
   headers.delete("content-length");
   headers.delete("content-encoding");
   headers.delete("transfer-encoding");
-  headers.delete("location");
+  // headers.delete("location");
 
   console.log(
     `XXXXX downstream headers`,
     Object.fromEntries(headers.entries())
   );
   return headers;
-};
-
-const literalFailingUpstreamResponse = () => {
-  return new Response(
-    '{"type":"CONTAINER","id":{"serviceId":"16751367","accountId":"998892611","objectId":"c16ad138-a40f-42e2-9bcd-dfb102bf28d1"},"name":"Queue","ephemeral":true,"playable":true,"resourceCount":400}',
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "Content-Length": "192",
-        ETag: "8",
-        "X-Response-Time": "565ms",
-        Date: "Fri, 31 May 2024 14:33:16 GMT",
-      },
-    }
-  );
 };
