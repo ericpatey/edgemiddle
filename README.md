@@ -1,6 +1,22 @@
-This repo provides a minimal reproduction of Next.js middleware stripping any `etag` header set by the middleware when the middleware fully handles the request.
+This repo provides a minimal reproduction of two bugs.
 
-The middleware always adds two headers to the response: `{ sonos: "rocks", etag: "666" }`. 
+## Stripping of `ETag` header set by middleware when the middleware fully handles the request.
+
+Perform `curl --location 'https://<<host>>/strippedEtag'`
+
+The middleware for this route will fully handle the request and include the following two headers in the response: `{ sonos: "rocks", etag: "666" }`.
+
+When run locally, the client receives both headers.
+
+When run in Vercel, the client receives `sonos: "rocks"`, but not the `etag`.
+
+Perform `curl --location 'https://<<host>>/brokenEtag'`
+
+The middleware for this route will augment the response with the same two headers.
+
+When run locally, the client receives both headers.
+
+When run in Vercel, the `ETag` received by the client has been modified
 
 The app has a single route at `/api`.
 
@@ -10,3 +26,5 @@ If the url does not have that search param, the middleware will add the headers,
 
 > [!Note]
 > This bug does not reproduce when running locally — likely because there is no real edge environment when running locally.
+
+## Improperly returning `412 — Precondition Failed`

@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
   switch (lastPath) {
     case "strippedEtag":
       return new NextResponse("Hello from middleware!", requestInit);
-    case "properEtag":
+    case "brokenEtag":
       return NextResponse.next(requestInit);
     case "ifMatch":
       return handleIfMatch(req);
